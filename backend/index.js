@@ -7,7 +7,6 @@ var authKey = require('./authorization_key.json').key
 
 var SpotifyWebApi = require('spotify-web-api-node')
 var meditations = require('./meditations.json')
-var sadVideos = require('./sadPlaylists.json')
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -88,9 +87,8 @@ app.get("/activities/:emotion", (req, res) => {
 })
 
 let getFromJson = (filename) => {
-	return []
-	//var results = require(filename)
-	//return results
+	var results = require(filename).slice(0, 6)
+	return results
 }
 
 let getSadActivities = (res) => {
@@ -99,9 +97,9 @@ let getSadActivities = (res) => {
 	let resultsObject = {
 		tabs: ["Funny Videos", "Comfort Food", "Meditation"],
 		data: [
-			getFromJson("./sadFunnyVideos.json"),
+			getFromJson("./videos/sadFunnyVideos.json"),
 			[],
-			getFromJson("./sadMeditationVideos.json")
+			getFromJson("./videos/sadMeditationVideos.json")
 		]
 		//music: sadMusicPlaylist
 	}
@@ -120,8 +118,8 @@ let getAngerActivities = (res) => {
 		tabs: ["Get your workout on!", "Meditation", "Relaxing Music"],
 		data: [
 			[],
-			getFromJson("./angerMeditationVideos.json"),
-			[]
+			getFromJson("./videos/angerMeditationVideos.json"),
+			getFromJson('./videos/angerRelaxingMusic.json')
 		]
 	}
 	getLocationFromYelp('spas', (info) => {
@@ -137,9 +135,9 @@ let getFearActivities = (res) => {
 	let resultsObject = {
 		tabs: ["Meditation", "Watch fearless people on Youtube", "Hype Music"],
 		data: [
-			getFromJson("./fearMeditationVideos.json"),
-			getFromJson("./fearHypeVideos.json"),
-			getFromJson("./sadMeditationVideos.json")
+			getFromJson("./videos/fearMeditationVideos.json"),
+			getFromJson("./videos/fearHypeVideos.json"),
+			getFromJson("./videos/fearHypeMusic.json")
 		]//music: sadMusicPlaylist
 	}
 	res.send(resultsObject)
@@ -152,7 +150,7 @@ let getJoyActivities = (res) => {
 		data: [
 			[],
 			[],
-			getFromJson("./joyMeditationVideos.json")
+			getFromJson("./videos/joyMeditationVideos.json")
 		]//music: sadMusicPlaylist
 	}
 	

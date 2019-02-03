@@ -97,7 +97,7 @@ class Results extends React.Component {
 	          <CardMedia
 		          image={info.image_url}
 		          title="Paella dish"
-		          style={{height: 280}}
+		          style={{height: 196}}
 		        />
 	          <Typography style={{ textAlign: 'left', fontSize: '2em', padding: 10, color: '#4B4B4B'}}>
 	            <a href={info.url}>{info.name}</a>
