@@ -88,8 +88,9 @@ app.get("/activities/:emotion", (req, res) => {
 })
 
 let getFromJson = (filename) => {
-	var results = require(filename)
-	return results
+	return []
+	//var results = require(filename)
+	//return results
 }
 
 let getSadActivities = (res) => {
@@ -98,9 +99,9 @@ let getSadActivities = (res) => {
 	let resultsObject = {
 		tabs: ["Funny Videos", "Comfort Food", "Meditation"],
 		data: [
-			getFromResults("sadFunnyVideos.json"),
+			getFromJson("./sadFunnyVideos.json"),
 			[],
-			getFromResults("sadMeditationVideos.json")
+			getFromJson("./sadMeditationVideos.json")
 		]
 		//music: sadMusicPlaylist
 	}
@@ -116,24 +117,29 @@ let getSadActivities = (res) => {
 
 let getAngerActivities = (res) => {
 	let resultsObject = {
-		tabs: ["Get your workout on!", "Meditation", "Relaxing Music"]
+		tabs: ["Get your workout on!", "Meditation", "Relaxing Music"],
 		data: [
-			getFromResults("sadFunnyVideos.json"),
 			[],
-			getFromResults("sadMeditationVideos.json")
+			getFromJson("./angerMeditationVideos.json"),
+			[]
 		]
 	}
-	res.send(resultsObject)
+	getLocationFromYelp('spas', (info) => {
+		let businesses = JSON.parse(info).businesses.slice(0, 6)
+		console.log(businesses)
+		resultsObject.data[0] = businesses	
+		res.send(JSON.stringify(resultsObject))
+	})
 	// gyms/spas/saunas, meditation, relaxing music
 }
 
 let getFearActivities = (res) => {
 	let resultsObject = {
-		tabs: ["Meditation", "Watch fearless people on Youtube", "Hype Music"]
+		tabs: ["Meditation", "Watch fearless people on Youtube", "Hype Music"],
 		data: [
-			getFromResults("./fearMeditationVideos.json"),
-			getFromResults("./fearHypeVideos.json"),
-			getFromResults("./sadMeditationVideos.json")
+			getFromJson("./fearMeditationVideos.json"),
+			getFromJson("./fearHypeVideos.json"),
+			getFromJson("./sadMeditationVideos.json")
 		]//music: sadMusicPlaylist
 	}
 	res.send(resultsObject)
@@ -142,14 +148,13 @@ let getFearActivities = (res) => {
 
 let getJoyActivities = (res) => {
 	let resultsObject = {
-		tabs: ["Amusement Parks", "Restaurants", "Funny Movies"]
+		tabs: ["Amusement Parks", "Restaurants", "Funny Movies"],
 		data: [
 			[],
 			[],
-			getFromResults("./joyMeditationVideos.json")
+			getFromJson("./joyMeditationVideos.json")
 		]//music: sadMusicPlaylist
 	}
-	res.send(resultsObject)
 	
 	// Get list of comfort food locations from Yelp
 	getLocationFromYelp('amusement parks', (info) => {
@@ -160,7 +165,7 @@ let getJoyActivities = (res) => {
 		getLocationFromYelp('restaurants', (info) => {
 			let businesses = JSON.parse(info).businesses.slice(0, 6)
 			console.log(businesses)
-			resultsObject.data[2] = businesses
+			resultsObject.data[1] = businesses
 			res.send(JSON.stringify(resultsObject))
 		})
 	})
