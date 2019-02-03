@@ -6,7 +6,6 @@ var fs = require('fs')
 var authKey = require('./authorization_key.json').key
 
 var SpotifyWebApi = require('spotify-web-api-node')
-var meditations = require('./meditations.json')
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -119,7 +118,7 @@ let getAngerActivities = (res) => {
 		data: [
 			[],
 			getFromJson("./videos/angerMeditationVideos.json"),
-			getFromJson('./videos/angerRelaxingMusic.json')
+			getFromJson('./videos/angerRelaxationVideos.json')
 		]
 	}
 	getLocationFromYelp('spas', (info) => {
