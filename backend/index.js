@@ -14,11 +14,12 @@ tones = ["anger", "fear", "joy", "sadness", "analytical", "confident", "tentativ
 let log = {
 }
 
-saveData = () => {
+saveData = (cb) => {
 	fs.writeFile('./data.json', JSON.stringify(log), (err) => {
 		if (err) {
 			console.error("Failed to save log")
 		}
+		cb()
 	})
 }
 
@@ -32,31 +33,39 @@ loadData = (callback) => {
 	callback()
 }
 
-let logRequest = (message, response) => {
+let logRequest = (message, response, cb) => {
 	log[message] = response
-	saveData()
+	saveData(cb)
 }
 
 let processRequest = (responseObject, res) => {
-	let responseTones = responseObject['sentences_tone']
-
+	let responseTones
 	tonesValues = {
-		"sadness": 0,
-		"anger": 0,
-		"fear": 0,
-		"joy": 0,
-		"tentative": 0,
-		"analytical": 0,
-		"confident": 0
+			"sadness": 0,
+			"anger": 0,
+			"fear": 0,
+			"joy": 0,
+			"tentative": 0,
+			"analytical": 0,
+			"confident": 0
 	}
-
-	responseTones.forEach(tonesObj => {
-		tonesObj.tones.forEach(tone => {
-			console.log(JSON.stringify(tone))
+	if (responseObject['sentences_tone'] == undefined) {
+		responseTones = responseObject['document_tone'].tones
+		responseTones.forEach(tone => {
 			tonesValues[tone['tone_id']] += tone['score']
 		})
-	})
+	} else {
+		responseTones = responseObject['sentences_tone']
+		
+		console.log("RESPONSE TONES", responseTones)
 
+		responseTones.forEach(tonesObj => {
+			tonesObj.tones.forEach(tone => {
+				console.log(JSON.stringify(tone))
+				tonesValues[tone['tone_id']] += tone['score']
+			})
+		})
+	}
 	let numSentences = responseTones.length
 
 	console.log(JSON.stringify(tonesValues))
@@ -75,7 +84,7 @@ app.post("/sentiment", (req, res) => {
 	let textBody = req.body.sentence
 
 	if (log[textBody] !== undefined) {
-		//console.log("Loading results from cache:", textBody, log[textBody])
+		console.log("Loading results from cache:", textBody, log[textBody])
 		processRequest(log[textBody], res)
 	} else {
 		console.log("Received request for sentence: ", textBody)
@@ -93,20 +102,22 @@ app.post("/sentiment", (req, res) => {
 
 		request(options, (err, respons, body) => {
 			if (err) {
-				throw new Error(err)
+				console.error(err)
+			} else {
+				console.log(body)
+				let responseObject = JSON.parse(body)
+
+				logRequest(textBody, responseObject, () => {
+					processRequest(responseObject, res)
+				})
+
 			}
-			console.log(body)
-			let responseObject = JSON.parse(body)
-
-			logRequest(textBody, responseObject)
-
-			processRequest(responseObject, res)
 		})
 	}
 })
 
 loadData(() => {
-	let port = 8080
+	let port = 80
 	app.listen(port)
 	console.log("Server listening on port", port)
 })
