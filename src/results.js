@@ -6,6 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Axios from 'axios'
+let server = require('./config.json').server
+
 
 function TabContainer(props) {
   return (
@@ -19,19 +21,35 @@ function TabContainer(props) {
 class Results extends React.Component {
 	constructor(props) {
 		super(props)
+		let printEmotion
 		let emotion = props.match.params.emotion
 		if (emotion === "joy") {
-			emotion = "happy"
+			printEmotion = "happy"
 		} else if (emotion === "sadness") {
-			emotion = "sad"
+			printEmotion = "sad"
 		} else if (emotion === "anger") {
-			emotion = "angry"
+			printEmotion = "angry"
 		} else if (emotion === "fear") {
-			emotion = "scared"
+			printEmotion = "scared"
 		}
 		this.state = {
 			openTab: 0,
-            emotion: emotion
+            emotion: emotion,
+            printEmotion: printEmotion,
+            tabs: []
+		}
+	}
+
+	componentWillMount = async () => {
+		let request = `${server}/activities/${this.state.emotion}`
+		try {
+			let response = await Axios.get(request)
+			console.log(response.data)
+			this.setState({
+				tabs: response.data.tabs,
+			})
+		} catch (e) {
+			console.log("Error, could not find: ", e)
 		}
 	}
 
@@ -49,7 +67,7 @@ class Results extends React.Component {
 			<div className="ResultsGradient" style={{minHeight: '90vh', width: '100%'}} >
 				<div style={{textAlign: 'center', paddingTop: 20, fontSize: '2.3em',  borderRadius: '8px'}}>
 					Based on your journal entry, I think you feel:<br/>
-					<span style={{fontSize: '2.2em'}}> {this.state.emotion} </span>
+					<span style={{fontSize: '2.2em'}}> {this.state.printEmotion} </span>
 				</div>
 				<Tabs
 		          onChange={this.handleChange}
@@ -60,9 +78,9 @@ class Results extends React.Component {
 		          textColor="primary"
 		          centered
 		        >
-		          <Tab label="Funny videos!" />
-		          <Tab label="Comfort Restaurants" />
-		          <Tab label="Sad music" />
+		          <Tab label={this.state.tabs[0]}/>
+		          <Tab label={this.state.tabs[1]} />
+		          <Tab label={this.state.tabs[2]} />
 		        </Tabs>
 		         <SwipeableViews
 		          axis={'x'}

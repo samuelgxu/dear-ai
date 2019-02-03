@@ -71,43 +71,64 @@ let sampleFromList = (list) => {
 	return list[Math.floor(Math.random() * Math.floor(list.length))]
 }
 
-let getSadActivities = () => {
+
+app.get("/activities/:emotion", (req, res) => {
+	let emotion = req.params.emotion
+	console.log("Got request for emotion", emotion)
+	res.setHeader('Content-Type', 'text/json')
+	if (emotion === "joy") {
+		getJoyActivities(res)
+	} else if (emotion === "sadness") {
+		getSadActivities(res)
+	} else if (emotion === "anger") {
+		getAngerActivities(res)
+	} else if (emotion === "fear") {
+		getFearActivities(res)
+	}
+})
+
+let getSadActivities = (res) => {
 	// funny YT video playlists, comfort food, sad music
 
-	let sadResultsObject = {
+	let resultsObject = {
+		tabs: ["Funny Videos", "Comfort Food", "Sad Music"],
 		videos: sampleFromList(sadVideos),
-		restaurants: [],
+		restaurants: []
 		//music: sadMusicPlaylist
 	}
 
 	// Get list of comfort food locations from Yelp
 	getLocationFromYelp('comfort food', (info) => {
-		
+		let businesses = JSON.parse(info).businesses.slice(0, 4)
+		resultsObject['restaurants'] = businesses
+		res.send(resultsObject)
 	})
 }
 
-app.get("/activities/:emotion", (req, res) => {
-	let emotion = req.params.emotion
-	if (emotion === "joy") {
-
-	} else if (emotion === "sadness") {
-
-	} else if (emotion === "anger") {
-
-	} else if (emotion === "fear") {
-		
+let getAngerActivities = (res) => {
+	let resultsObject = {
+		tabs: ["Get your workout on!", "Meditation", "Relaxing Music"]
+		//music: sadMusicPlaylist
 	}
-})
-
-let getAngerActivities = () => {
+	res.send(resultsObject)
 	// gyms/spas/saunas, meditation, relaxing music
 }
 
-let getFearActivities = () => {
+let getFearActivities = (res) => {
+	let resultsObject = {
+		tabs: ["Meditation", "Watch fearless people on Youtube", "Hype Music"]
+		//music: sadMusicPlaylist
+	}
+	res.send(resultsObject)
 	// meditation, fearless youtube videos, hype music
 }
 
-let getJoyActivities = () => {
+let getJoyActivities = (res) => {
+	let resultsObject = {
+		tabs: ["Amusement Parks", "Restaurants", "Funny Movies"]
+		//music: sadMusicPlaylist
+	}
+	res.send(resultsObject)
 	// amusement parks, restaurants (celebration), funny movies, meditation
 }
 
