@@ -87,15 +87,20 @@ app.get("/activities/:emotion", (req, res) => {
 	}
 })
 
+let getFromJson = (filename) => {
+	var results = require(filename)
+	return results
+}
+
 let getSadActivities = (res) => {
 	// funny YT video playlists, comfort food, sad music
 
 	let resultsObject = {
-		tabs: ["Funny Videos", "Comfort Food", "Sad Music"],
+		tabs: ["Funny Videos", "Comfort Food", "Meditation"],
 		data: [
+			getFromResults("sadFunnyVideos.json"),
 			[],
-			[],
-			[]
+			getFromResults("sadMeditationVideos.json")
 		]
 		//music: sadMusicPlaylist
 	}
@@ -112,7 +117,11 @@ let getSadActivities = (res) => {
 let getAngerActivities = (res) => {
 	let resultsObject = {
 		tabs: ["Get your workout on!", "Meditation", "Relaxing Music"]
-		//music: sadMusicPlaylist
+		data: [
+			getFromResults("sadFunnyVideos.json"),
+			[],
+			getFromResults("sadMeditationVideos.json")
+		]
 	}
 	res.send(resultsObject)
 	// gyms/spas/saunas, meditation, relaxing music
@@ -121,7 +130,11 @@ let getAngerActivities = (res) => {
 let getFearActivities = (res) => {
 	let resultsObject = {
 		tabs: ["Meditation", "Watch fearless people on Youtube", "Hype Music"]
-		//music: sadMusicPlaylist
+		data: [
+			getFromResults("./fearMeditationVideos.json"),
+			getFromResults("./fearHypeVideos.json"),
+			getFromResults("./sadMeditationVideos.json")
+		]//music: sadMusicPlaylist
 	}
 	res.send(resultsObject)
 	// meditation, fearless youtube videos, hype music
@@ -130,9 +143,27 @@ let getFearActivities = (res) => {
 let getJoyActivities = (res) => {
 	let resultsObject = {
 		tabs: ["Amusement Parks", "Restaurants", "Funny Movies"]
-		//music: sadMusicPlaylist
+		data: [
+			[],
+			[],
+			getFromResults("./joyMeditationVideos.json")
+		]//music: sadMusicPlaylist
 	}
 	res.send(resultsObject)
+	
+	// Get list of comfort food locations from Yelp
+	getLocationFromYelp('amusement parks', (info) => {
+		let businesses = JSON.parse(info).businesses.slice(0, 6)
+		console.log(businesses)
+		resultsObject.data[0] = businesses		
+		// Get list of comfort food locations from Yelp
+		getLocationFromYelp('restaurants', (info) => {
+			let businesses = JSON.parse(info).businesses.slice(0, 6)
+			console.log(businesses)
+			resultsObject.data[2] = businesses
+			res.send(JSON.stringify(resultsObject))
+		})
+	})
 	// amusement parks, restaurants (celebration), funny movies, meditation
 }
 
