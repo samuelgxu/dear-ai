@@ -15,11 +15,18 @@ app.use(bodyParser.json())
 
 tones = ["anger", "fear", "joy", "sadness", "analytical", "confident", "tentative"]
 
-let log = {
+let cache = {
 }
 
+let userResults = []
+
 saveData = () => {
-	fs.writeFile('./data.json', JSON.stringify(log), (err) => {
+	fs.writeFile('./data.json', JSON.stringify(cache), (err) => {
+		if (err) {
+			console.error("Failed to save cache")
+		}
+	})
+	fs.writeFile('./userResults.json', JSON.stringify(userResults), (err) => {
 		if (err) {
 			console.error("Failed to save log")
 		}
@@ -28,19 +35,19 @@ saveData = () => {
 
 loadData = (callback) => {
 	try {
-		log = JSON.parse(fs.readFileSync('./data.json', 'utf8'))
+		cache = JSON.parse(fs.readFileSync('./data.json', 'utf8'))
+		userResults = JSON.parse(fs.readFileSync('./userResults.json', 'utf8'))
 	} catch (e) {
-		let log = {
-		}
+		let cache = {}
+		let userResults = []
 	}
 	callback()
 }
 
-let logRequest = (message, response) => {
-	log[message] = response
+let cacheRequest = (message, response) => {
+	cache[message] = response
 	saveData()
 }
-
 
 var spotifyApi = new SpotifyWebApi({
   clientId: '1cb9d9d9a4b14c6780d7be13281bc5f0',
@@ -111,7 +118,17 @@ let getLocationFromYelp = (searchBarText, callback) => {
 		if (error) throw new Error(error)
 		console.log(body)
 		callback(body)
-	});
+	})
+}
+
+// takes in a message and saves date and returned response (like happiness, sadness)
+let saveResults = (message, returnedEmotion) => {
+ 	userResults.push({
+ 		date: new Date().toString(),
+ 		message: message,
+ 		response: returnedEmotion
+ 	})
+
 }
 
 let processRequest = (responseObject, res) => {
@@ -126,63 +143,100 @@ let processRequest = (responseObject, res) => {
 		"analytical": 0,
 		"confident": 0
 	}
+	
+	if (responseObject['sentences_tone'] == undefined) {
+        responseTones = responseObject['document_tone'].tones
+        responseTones.forEach(tone => {
+            tonesValues[tone['tone_id']] += tone['score']
+        })
+    } else {
+        responseTones = responseObject['sentences_tone']
 
-	responseTones.forEach(tonesObj => {
-		tonesObj.tones.forEach(tone => {
-			console.log(JSON.stringify(tone))
-			tonesValues[tone['tone_id']] += tone['score']
-		})
-	})
+        console.log("RESPONSE TONES", responseTones)
 
-	let numSentences = responseTones.length
+        responseTones.forEach(tonesObj => {
+            tonesObj.tones.forEach(tone => {
+                console.log(JSON.stringify(tone))
+                tonesValues[tone['tone_id']] += tone['score']
+            })
+        })
+    }
+    let numSentences = responseTones.length
 
-	console.log(JSON.stringify(tonesValues))
-	returnsObj = {}
-	returnsObj['sadness'] = tonesValues['sadness'] / numSentences
-	returnsObj['anger'] = tonesValues['anger'] / numSentences
-	returnsObj['fear'] = tonesValues['fear'] / numSentences
-	returnsObj['joy'] = tonesValues['joy'] / numSentences
-
+    console.log(JSON.stringify(tonesValues))
+    returnsObj = {}
+    returnsObj['sadness'] = tonesValues['sadness'] / numSentences
+    returnsObj['anger'] = tonesValues['anger'] / numSentences
+    returnsObj['fear'] = tonesValues['fear'] / numSentences
+    returnsObj['joy'] = tonesValues['joy'] / numSentences
+	
 	// Get the tone with the highest percentage
 	highestTonePercentage = Math.max(returnsObj['sadness'], returnsObj['anger'], returnsObj['fear'], returnsObj['joy'])
+	
 	highestTone = null
-	for (var emotion in returnsObj) {
-		if (returnsObj[emotion] == highestTonePercentage) {
-			console.log("The tone with the highest percentage is " + emotion)
-			highestTone = emotion
-			console.log()
+
+	if (highestTonePercentage !== 0) {
+		for (var emotion in returnsObj) {
+			if (returnsObj[emotion] == highestTonePercentage) {
+				console.log("The tone with the highest percentage is " + emotion)
+				highestTone = emotion
+				console.log()
+			}
 		}
+	} else {
+		highestTone = "joy"
 	}
 
 	// Execute a function depending on the highest emotion percentage
-	switch(highestTone) {
-		case 'sadness':
-			getSadActivities()
-			break
-		case 'anger':
-			getAngerActivities()
-			break
-		case 'fear':
-			getFearActivities()
-			break
-		case 'joy':
-			getJoyActivities()
-			break
-		default:
-			console.log("There was no highest tone percentage for some strange reason")
-	}
-
-	res.send(JSON.stringify(returnsObj))
+	res.send({emotion: highestTone})
 }
+
+let sampleData = [
+  {
+    date: "1/23/2019",
+    message: "Felt great today. 10/10",
+    response: "joy"
+  },
+  {
+    date: "1/28/2019",
+    message: "Did not feel so good today",
+    response: "sadness"
+  },
+  {
+    date: "2/1/2019",
+    message: "Hate my car because it's too slow.",
+    response: "anger"
+  },
+  {
+    date: "2/2/2019",
+    message: "Went to PennApps today. Was happy to start!",
+    response: "joy"
+  },
+  {
+    date: "2/3/2019",
+    message: "Have to present tomorrow. Very scared of how it's going to go...",
+    response: "fear"
+  },
+  {
+    date: "2/4/2019",
+    message: "Happy that we did very well for our presentation at PennApps!",
+    response: "joy"
+  }
+]
+
+app.get("/log", (req, res) => {
+	res.setHeader('Content-Type', 'text/json')
+	res.send(JSON.stringify(sampleData))
+})
 
 app.post("/sentiment", (req, res) => {
 	res.setHeader('Content-Type', 'text/json')
 	
 	let textBody = req.body.sentence
 
-	if (log[textBody] !== undefined) {
-		//console.log("Loading results from cache:", textBody, log[textBody])
-		processRequest(log[textBody], res)
+	if (cache[textBody] !== undefined) {
+		console.log("Loading results from cache:", textBody, cache[textBody])
+		processRequest(cache[textBody], res)
 	} else {
 		console.log("Received request for sentence: ", textBody)
 		let options = {
@@ -204,12 +258,13 @@ app.post("/sentiment", (req, res) => {
 			console.log(body)
 			let responseObject = JSON.parse(body)
 
-			logRequest(textBody, responseObject)
+			cacheRequest(textBody, responseObject)
 
 			processRequest(responseObject, res)
 		})
 	}
 })
+
 
 loadData(() => {
 	let port = 8080

@@ -23,7 +23,7 @@ class App extends Component {
             <Route exact path="/" component={HomePage} />
             <Route path="/addentry" component={AddEntry} />
             <Route path="/viewlogs" component={ViewLogs} />
-            <Route path="/results" component={Results} />
+            <Route path="/results/:emotion" component={Results} />
             
           </Switch>
       </div>
