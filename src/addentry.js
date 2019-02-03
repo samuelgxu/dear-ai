@@ -3,6 +3,8 @@ import Button from '@material-ui/core/Button';
 import { Link, Redirect } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Axios from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import "./gradients.css"
 
 var request = require('request')
@@ -13,16 +15,31 @@ class AddEntry extends React.Component {
 		super(props)
 		this.state = {
 			userText: "",
-			redirect: false
+			redirect: false,
+			buttonDisabled: true,
+			loading: false
 		}
 	}
 	handleTextChange = (event, value) => {
 		this.setState({
 			userText: event.target.value
+		}, () => {
+			if (this.state.userText.length > 0) {
+				this.setState({
+					buttonDisabled: false
+				})
+			} else {
+				this.setState({
+					buttonDisabled: true
+				})
+			}
 		})
 	}
 
 	handleSubmit = () => {
+		this.setState({
+			loading: true
+		})
 		var options = { method: 'POST',
 		  url: `${server}/sentiment`,
 		  headers: 
@@ -65,9 +82,11 @@ class AddEntry extends React.Component {
 			          hint="Tell me how it went.."
 			          margin="normal"
 			        /><br/>
+			        {this.state.loading && <div><CircularProgress /></div>}
 					<Button 
 						variant="filled" 
 						color="primary"
+						disabled={this.state.buttonDisabled}
 						onClick={this.handleSubmit}
 						style={{minHeight: '10vh', minWidth: '30vh', fontSize: '1.5em'}} 
 						size="large">Save

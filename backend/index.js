@@ -86,6 +86,19 @@ let getSadActivities = () => {
 	})
 }
 
+app.get("/activities/:emotion", (req, res) => {
+	let emotion = req.params.emotion
+	if (emotion === "joy") {
+
+	} else if (emotion === "sadness") {
+
+	} else if (emotion === "anger") {
+
+	} else if (emotion === "fear") {
+		
+	}
+})
+
 let getAngerActivities = () => {
 	// gyms/spas/saunas, meditation, relaxing music
 }

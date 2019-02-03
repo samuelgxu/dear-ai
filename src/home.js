@@ -9,7 +9,7 @@ class HomePage extends React.Component {
 		return (
 			<div className="HomeGradient" style={{minHeight: '90vh'}}>
 				<div style={{fontSize: "4em", width: '100%', paddingTop: '8vh'}}>
-					Welcome to Mind AID.
+					Welcome to <span style={{color: '#DE5151'}}>Dear</span><span style={{color: '#93C5CB'}}>AI</span>
 				</div>
 				<div style={{fontSize: '2em', width: '100%'}}>
 					We use machine learning to improve your lifestyle and wellbeing</div>
