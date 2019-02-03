@@ -37,14 +37,46 @@ let logRequest = (message, response) => {
 	saveData()
 }
 
+let processRequest = (responseObject, res) => {
+	let responseTones = responseObject['sentences_tone']
+
+	tonesValues = {
+		"sadness": 0,
+		"anger": 0,
+		"fear": 0,
+		"joy": 0,
+		"tentative": 0,
+		"analytical": 0,
+		"confident": 0
+	}
+
+	responseTones.forEach(tonesObj => {
+		tonesObj.tones.forEach(tone => {
+			console.log(JSON.stringify(tone))
+			tonesValues[tone['tone_id']] += tone['score']
+		})
+	})
+
+	let numSentences = responseTones.length
+
+	console.log(JSON.stringify(tonesValues))
+	returnsObj = {}
+	returnsObj['sadness'] = tonesValues['sadness'] / numSentences
+	returnsObj['anger'] = tonesValues['anger'] / numSentences
+	returnsObj['fear'] = tonesValues['fear'] / numSentences
+	returnsObj['joy'] = tonesValues['joy'] / numSentences
+
+	res.send(JSON.stringify(returnsObj))
+}
+
 app.post("/sentiment", (req, res) => {
 	res.setHeader('Content-Type', 'text/json')
 	
 	let textBody = req.body.sentence
 
 	if (log[textBody] !== undefined) {
-		console.log("Loading results from cache:", textBody, log[textBody])
-		res.send(log[textBody])
+		//console.log("Loading results from cache:", textBody, log[textBody])
+		processRequest(log[textBody], res)
 	} else {
 		console.log("Received request for sentence: ", textBody)
 		let options = {
@@ -65,34 +97,12 @@ app.post("/sentiment", (req, res) => {
 			}
 			console.log(body)
 			let responseObject = JSON.parse(body)
-			let responseTones = responseObject['document_tone']['tones']
 
-			tonesObj = {
-				"sadness": 0,
-				"anger": 0,
-				"fear": 0,
-				"joy": 0,
-				"analytical": 0,
-				"confident": 0,
-				"tentative": 0
-			}
+			logRequest(textBody, responseObject)
 
-			responseTones.forEach(toneObj => {
-				tonesObj[toneObj['tone_id']] = toneObj['score']
-			})
-
-			logRequest(textBody, tonesObj)
-			res.send(JSON.stringify(tonesObj))
+			processRequest(responseObject, res)
 		})
 	}
-})
-
-app.post("/suggestions", (req, res) => {
-	res.setHeader('Content-Type', 'text/json')
-
-	let textBody = req.body
-
-
 })
 
 loadData(() => {
