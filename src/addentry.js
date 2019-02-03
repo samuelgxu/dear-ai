@@ -67,7 +67,7 @@ class AddEntry extends React.Component {
 					<div style={{fontSize: '2em', color: '#333333'}}>What happened today?</div>
 					<TextField
 			          id="standard-multiline-flexible"
-			          label="Tell me how it went!"
+			          label="Jot your thoughts down..."
 			          style={{minWidth: '60vw', minHeight: '40vh'}}
 			          multiline
 			          value={this.state.userText}

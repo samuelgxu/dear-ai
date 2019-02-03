@@ -8,6 +8,8 @@ import Tab from '@material-ui/core/Tab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Axios from 'axios'
 
+import ButtonBase from '@material-ui/core/ButtonBase';
+
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -92,18 +94,20 @@ class Results extends React.Component {
 
 	makeCard = (info, title) => {
 	    return (
+      	<ButtonBase classNam>
 	      <Card className={styles.card} elevation={2} style={{width: 350, margin: 10}}>
 	        <CardContent style={{padding: 0}}>
 	          <CardMedia
 		          image={info.image_url}
-		          title="Paella dish"
+		          title={info.name}
 		          style={{height: 196}}
 		        />
-	          <Typography style={{ textAlign: 'left', fontSize: '2em', padding: 10, color: '#4B4B4B'}}>
-	            <a href={info.url}>{info.name}</a>
+	          <Typography style={{ textAlign: 'left', fontSize: '2em', padding: 10, color: '#4B4B4B', minHeight: '3.8em'}}>
+	            <a href={info.url}>{info.name.substring(0, 40) + (info.name.length > 40 ? "..." : "")}</a>
 	          </Typography>
 	        </CardContent>
 	      </Card>
+	      </ButtonBase>
 	    )
 	  }
 
@@ -119,7 +123,8 @@ class Results extends React.Component {
 				<div className="ResultsGradient" style={{minHeight: '90vh', width: '100%'}} >
 					<div style={{textAlign: 'center', paddingTop: 20, fontSize: '2.3em',  borderRadius: '8px'}}>
 						Based on your journal entry, I think you feel:<br/>
-						<span style={{fontSize: '2.2em'}}> {this.state.printEmotion} </span>
+						<span style={{fontSize: '2.2em'}}> {this.state.printEmotion} </span><br/>
+						Here are some recommendations:
 					</div>
 					<div>
 						<Tabs
