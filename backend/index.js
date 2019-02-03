@@ -64,26 +64,54 @@ let sampleFromList = (list) => {
 	return list[Math.floor(Math.random() * Math.floor(list.length))]
 }
 
-let getSad = () => {
+let getSadActivities = () => {
 	// funny YT video playlists, comfort food, sad music
 
 	let sadResultsObject = {
 		videos: sampleFromList(sadVideos),
 		restaurants: [],
-		music: sadMusicPlaylist
+		//music: sadMusicPlaylist
 	}
+
+	// Get list of comfort food locations from Yelp
+	getLocationFromYelp('comfort food', (info) => {
+		
+	})
 }
 
-let getHappy = () => {
-	// amusement parks, restaurants (celebration), funny movies, meditation
-}
-
-let getAnger = () => {
+let getAngerActivities = () => {
 	// gyms/spas/saunas, meditation, relaxing music
 }
 
-let getFear = () => {
+let getFearActivities = () => {
 	// meditation, fearless youtube videos, hype music
+}
+
+let getJoyActivities = () => {
+	// amusement parks, restaurants (celebration), funny movies, meditation
+}
+
+// Yelp functions here
+let getLocationFromYelp = (searchBarText, callback) => {
+	var request = require("request")
+
+	var options = { 
+		method: 'GET', 
+		url: 'https://api.yelp.com/v3/businesses/search',
+		qs: { 
+			term: searchBarText, 
+			location: 'Philadelphia, Pennsylvania' 
+		},
+		headers: { 
+			Authorization: 'Bearer 3u3sKBiXRuSXu2mnpLZcTrTJsrYzNsSAYyl-i2VaahZ-3Q6-_iMMQ62GX4-4MTMkdO1pj_LHI3jq6X6IeZiA-NwWE0jJOR8FToFC4e7T1gEfamPA-I28XQzAuKpWXHYx' 
+		}   
+	}
+
+	request(options, function (error, response, body) {
+		if (error) throw new Error(error)
+		console.log(body)
+		callback(body)
+	});
 }
 
 let processRequest = (responseObject, res) => {
@@ -117,10 +145,31 @@ let processRequest = (responseObject, res) => {
 
 	// Get the tone with the highest percentage
 	highestTonePercentage = Math.max(returnsObj['sadness'], returnsObj['anger'], returnsObj['fear'], returnsObj['joy'])
+	highestTone = null
 	for (var emotion in returnsObj) {
 		if (returnsObj[emotion] == highestTonePercentage) {
 			console.log("The tone with the highest percentage is " + emotion)
+			highestTone = emotion
+			console.log()
 		}
+	}
+
+	// Execute a function depending on the highest emotion percentage
+	switch(highestTone) {
+		case 'sadness':
+			getSadActivities()
+			break
+		case 'anger':
+			getAngerActivities()
+			break
+		case 'fear':
+			getFearActivities()
+			break
+		case 'joy':
+			getJoyActivities()
+			break
+		default:
+			console.log("There was no highest tone percentage for some strange reason")
 	}
 
 	res.send(JSON.stringify(returnsObj))
