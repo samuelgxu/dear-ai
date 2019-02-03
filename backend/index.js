@@ -48,13 +48,17 @@ var spotifyApi = new SpotifyWebApi({
   redirectUri: 'http://localhost:8888/callback'
 });
 
+
+let getFromSpotify = (playlist) => {
+	spotifyApi.getPlaylist(playlist).then(data => {
+		console.log('Some information about this playlist', data.body.tracks.items);
+	}, err => {
+		console.log('Something went wrong!', err);
+	});
+
+}
 spotifyApi.setAccessToken('BQAHKmMqccA2xBtZ2eYu5NIpok0eoruEsV7UfQuu-nIickHWlBS7ssAXjk6DrGUUf0yW8rBTvY7xwRvD92RJiwB-RbYuT53eCHVrAsA0_lTyFCXBJmzthiUN743tSuEmu-Vp_RCFaZsNDmJhxfWfs6URiVXaNt5G');
 
-spotifyApi.getPlaylist(playList).then(data => {
-	console.log('Some information about this playlist', data.body.tracks.items);
-}, err => {
-	console.log('Something went wrong!', err);
-});
 
 let sampleFromList = (list) => {
 	return list[Math.floor(Math.random() * Math.floor(list.length))]
