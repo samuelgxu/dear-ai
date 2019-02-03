@@ -15,11 +15,18 @@ app.use(bodyParser.json())
 
 tones = ["anger", "fear", "joy", "sadness", "analytical", "confident", "tentative"]
 
-let log = {
+let cache = {
 }
 
+let userResults = []
+
 saveData = () => {
-	fs.writeFile('./data.json', JSON.stringify(log), (err) => {
+	fs.writeFile('./data.json', JSON.stringify(cache), (err) => {
+		if (err) {
+			console.error("Failed to save cache")
+		}
+	})
+	fs.writeFile('./userResults.json', JSON.stringify(userResults), (err) => {
 		if (err) {
 			console.error("Failed to save log")
 		}
@@ -28,19 +35,19 @@ saveData = () => {
 
 loadData = (callback) => {
 	try {
-		log = JSON.parse(fs.readFileSync('./data.json', 'utf8'))
+		cache = JSON.parse(fs.readFileSync('./data.json', 'utf8'))
+		userResults = JSON.parse(fs.readFileSync('./userResults.json', 'utf8'))
 	} catch (e) {
-		let log = {
-		}
+		let cache = {}
+		let userResults = []
 	}
 	callback()
 }
 
-let logRequest = (message, response) => {
-	log[message] = response
+let cacheRequest = (message, response) => {
+	cache[message] = response
 	saveData()
 }
-
 
 var spotifyApi = new SpotifyWebApi({
   clientId: '1cb9d9d9a4b14c6780d7be13281bc5f0',
@@ -86,6 +93,15 @@ let getFear = () => {
 	// meditation, fearless youtube videos, hype music
 }
 
+// takes in a message and saves date and returned response (like happiness, sadness)
+let saveResults = (message, returnedEmotion) => {
+ 	userResults.push({
+ 		date: new Date().toString(),
+ 		message: message,
+ 		response: returnedEmotion
+ 	})
+}
+
 let processRequest = (responseObject, res) => {
 	let responseTones = responseObject['sentences_tone']
 
@@ -118,14 +134,52 @@ let processRequest = (responseObject, res) => {
 	res.send(JSON.stringify(returnsObj))
 }
 
+let sampleData = [
+  {
+    date: "1/23/2019",
+    message: "Felt great today. 10/10",
+    response: "joy"
+  },
+  {
+    date: "1/28/2019",
+    message: "Did not feel so good today",
+    response: "sadness"
+  },
+  {
+    date: "2/1/2019",
+    message: "Hate my car because it's too slow.",
+    response: "anger"
+  },
+  {
+    date: "2/2/2019",
+    message: "Went to PennApps today. Was happy to start!",
+    response: "joy"
+  },
+  {
+    date: "2/3/2019",
+    message: "Have to present tomorrow. Very scared of how it's going to go...",
+    response: "fear"
+  },
+  {
+    date: "2/4/2019",
+    message: "Happy that we did very well for our presentation at PennApps!",
+    response: "joy"
+  }
+]
+
+app.get("/log", (req, res) => {
+	res.setHeader('Content-Type', 'text/json')
+	res.send(JSON.stringify(sampleData))
+})
+
 app.post("/sentiment", (req, res) => {
 	res.setHeader('Content-Type', 'text/json')
 	
 	let textBody = req.body.sentence
 
-	if (log[textBody] !== undefined) {
-		//console.log("Loading results from cache:", textBody, log[textBody])
-		processRequest(log[textBody], res)
+	if (cache[textBody] !== undefined) {
+		console.log("Loading results from cache:", textBody, cache[textBody])
+		processRequest(cache[textBody], res)
 	} else {
 		console.log("Received request for sentence: ", textBody)
 		let options = {
@@ -147,7 +201,7 @@ app.post("/sentiment", (req, res) => {
 			console.log(body)
 			let responseObject = JSON.parse(body)
 
-			logRequest(textBody, responseObject)
+			cacheRequest(textBody, responseObject)
 
 			processRequest(responseObject, res)
 		})

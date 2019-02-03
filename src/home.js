@@ -7,7 +7,7 @@ import "./gradients.css"
 class HomePage extends React.Component {
 	render() {
 		return (
-			<div className="HomeGradient" style={{minHeight: '100vh'}}>
+			<div className="HomeGradient" style={{minHeight: '90vh'}}>
 				<div style={{fontSize: "4em", width: '100%', paddingTop: '8vh'}}>
 					Welcome to Mind AID.
 				</div>
