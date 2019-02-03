@@ -3,11 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
     "@material-ui/core": "^3.9.1",
-=======
     "node-sass": "^4.11.0",
->>>>>>> 20ce570684cc7b2307efbb4ace4b4b056b089263
     "react": "^16.7.0",
     "react-bulma-components": "^2.3.0",
     "react-dom": "^16.7.0",
