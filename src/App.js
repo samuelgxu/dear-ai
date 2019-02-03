@@ -11,34 +11,19 @@ import Results from './results.js'
 
 class App extends Component {
 
-  renderHomePage() {
-    return <HomePage />;
-  }
-
-  renderAddPage() {
-    return <AddEntry />;
-  }
-
-  renderLogPage() {
-    return <ViewLogs />;
-  }
-
-  renderResultsPage() {
-    return <Results />;
-  }
 
   render() {
     return (
-      <div className="App">
+      <div className="App" style={{height: '100%'}}>
 
           <MainNavbar />
 
           <Switch>
             
-            <Route exact path="/" render={() => this.renderHomePage()} />
-            <Route exact path="/addentry" render={() => this.renderAddPage()} />
-            <Route exact path="/viewlogs" render={() => this.renderLogPage()} />
-            <Route exact path="/results" render={() => this.renderResultsPage()} />
+            <Route exact path="/" component={HomePage} />
+            <Route path="/addentry" component={AddEntry} />
+            <Route path="/viewlogs" component={ViewLogs} />
+            <Route path="/results" component={Results} />
             
           </Switch>
       </div>
