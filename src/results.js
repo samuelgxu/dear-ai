@@ -36,7 +36,7 @@ const styles = {
 
 function TabContainer(props) {
   return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
+    <Typography component="div" style={{}}>
       {props.children}
     </Typography>
   );
@@ -90,19 +90,16 @@ class Results extends React.Component {
 		})
 	}
 
-	makeCard = (info) => {
+	makeCard = (info, title) => {
 	    return (
-	      <Card className={styles.card} elevation={2} style={{marginTop: 10, width: 280, margin: 10}}>
-	        <CardContent>
-	          <Typography className={styles.title} style={{fontSize: '1.2em'}} color="textSecondary" gutterBottom>
-	            Restaurant
-	          </Typography>
+	      <Card className={styles.card} elevation={2} style={{width: 350, margin: 10}}>
+	        <CardContent style={{padding: 0}}>
 	          <CardMedia
 		          image={info.image_url}
 		          title="Paella dish"
-		          style={{height: 140}}
+		          style={{height: 280}}
 		        />
-	          <Typography style={{ textAlign: 'left', paddingTop: 20, fontSize: '2em', color: '#4B4B4B'}}>
+	          <Typography style={{ textAlign: 'left', fontSize: '2em', padding: 10, color: '#4B4B4B'}}>
 	            <a href={info.url}>{info.name}</a>
 	          </Typography>
 	        </CardContent>
@@ -143,19 +140,31 @@ class Results extends React.Component {
 				          index={this.state.openTab}
 				          onChangeIndex={this.handleChangeIndex}>
 				          <TabContainer>{
-				          	this.state.info[0].map(this.makeCard)
+				          	<div style={{paddingTop: 20, paddingLeft: 20}}>
+				              <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', flexDirection: 'row', padding: 8}}>
+				                {
+				                  this.state.info[0].map((info) => this.makeCard(info, this.state.tabs[0]))
+				                }
+				              </div>
+				          	</div>
 				          }</TabContainer>
 				          <TabContainer>
 				        	<div style={{paddingTop: 20, paddingLeft: 20}}>
 				              <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', flexDirection: 'row', padding: 8}}>
 				                {
-				                  this.state.info[1].map(this.makeCard)
+				                  this.state.info[1].map((info) => this.makeCard(info, this.state.tabs[1]))
 				                }
 				              </div>
 				          	</div>
 				          </TabContainer>
 				          <TabContainer>{
-				          	this.state.info[2].map(this.makeCard)
+				          	<div style={{paddingTop: 20, paddingLeft: 20}}>
+				              <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', flexDirection: 'row', padding: 8}}>
+				                {
+				                  this.state.info[2].map((info) => this.makeCard(info, this.state.tabs[2]))
+				                }
+				              </div>
+				          	</div>
 				          }</TabContainer>
 				        </SwipeableViews> 
 			        </div>

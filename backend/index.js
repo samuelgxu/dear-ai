@@ -102,7 +102,7 @@ let getSadActivities = (res) => {
 
 	// Get list of comfort food locations from Yelp
 	getLocationFromYelp('comfort food', (info) => {
-		let businesses = JSON.parse(info).businesses.slice(0, 8)
+		let businesses = JSON.parse(info).businesses.slice(0, 6)
 		console.log(businesses)
 		resultsObject.data[1] = businesses
 		res.send(JSON.stringify(resultsObject))
