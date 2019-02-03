@@ -1,56 +1,46 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { Button, Navbar, Section, Hero, Container, Heading, Columns } from "react-bulma-components/full";
+import { Switch, Route } from "react-router";
 
+import MainNavbar from './navbar.js'
+
+import HomePage from './home.js'
+import AddEntry from './addentry.js'
+import ViewLogs from './viewlogs.js'
+import Results from './results.js'
 
 class App extends Component {
+
+  renderHomePage() {
+    return <HomePage />;
+  }
+
+  renderAddPage() {
+    return <AddEntry />;
+  }
+
+  renderLogPage() {
+    return <ViewLogs />;
+  }
+
+  renderResultsPage() {
+    return <Results />;
+  }
+
   render() {
     return (
       <div className="App">
 
-        <Navbar color = 'primary'>
-          <Navbar.Brand>
-          MindPlus
-          </Navbar.Brand>
+          <MainNavbar />
 
-          <Navbar.Menu>
-            <Navbar.Container position = "left">
-              <Navbar.Item>Add Journal Entry</Navbar.Item>
-            </Navbar.Container>
-            <Navbar.Container position = "left">
-              <Navbar.Item>View Journal Log</Navbar.Item>
-            </Navbar.Container>
-          </Navbar.Menu>
-
-        </Navbar>
-
-        <Section>
-          <Hero color="warning">
-            <Hero.Body>
-              <Container>
-                <Heading> Welcome to MAIndfulLife</Heading>
-                <Heading subtitle size = {3}>
-                  We use machine learning to recommend you activities through journaling so you can stay positive.
-                </Heading>
-              </Container>
-            </Hero.Body>
-          </Hero>
-        </Section>
-
-        <div>
-
-          <Columns>
-            <Columns.Column size = "half">
-              <Button color = "light"> Add Journal Entry</Button>
-            </Columns.Column>
-            <Columns.Column size = "half">
-              <Button color = "light"> View Journal Log</Button>
-            </Columns.Column>
-          </Columns>
-
-        </div>
-
+          <Switch>
+            
+            <Route exact path="/" render={() => this.renderHomePage()} />
+            <Route exact path="/addentry" render={() => this.renderAddPage()} />
+            <Route exact path="/viewlogs" render={() => this.renderLogPage()} />
+            <Route exact path="/results" render={() => this.renderResultsPage()} />
+            
+          </Switch>
       </div>
       );
   }
