@@ -7,6 +7,7 @@ import MainNavbar from './navbar.js'
 import HomePage from './home.js'
 import AddEntry from './addentry.js'
 import ViewLogs from './viewlogs.js'
+import Results from './results.js'
 
 class App extends Component {
 
@@ -22,6 +23,10 @@ class App extends Component {
     return <ViewLogs />;
   }
 
+  renderResultsPage() {
+    return <Results />;
+  }
+
   render() {
     return (
       <div className="App">
@@ -33,6 +38,7 @@ class App extends Component {
             <Route exact path="/" render={() => this.renderHomePage()} />
             <Route exact path="/addentry" render={() => this.renderAddPage()} />
             <Route exact path="/viewlogs" render={() => this.renderLogPage()} />
+            <Route exact path="/results" render={() => this.renderResultsPage()} />
             
           </Switch>
       </div>
