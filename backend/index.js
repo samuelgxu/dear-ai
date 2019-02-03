@@ -115,22 +115,32 @@ let processRequest = (responseObject, res) => {
 		"confident": 0
 	}
 
-	responseTones.forEach(tonesObj => {
-		tonesObj.tones.forEach(tone => {
-			console.log(JSON.stringify(tone))
-			tonesValues[tone['tone_id']] += tone['score']
-		})
-	})
+	if (responseObject['sentences_tone'] == undefined) {
+        responseTones = responseObject['document_tone'].tones
+        responseTones.forEach(tone => {
+            tonesValues[tone['tone_id']] += tone['score']
+        })
+    } else {
+        responseTones = responseObject['sentences_tone']
 
-	let numSentences = responseTones.length
+        console.log("RESPONSE TONES", responseTones)
 
-	console.log(JSON.stringify(tonesValues))
-	returnsObj = {}
-	returnsObj['sadness'] = tonesValues['sadness'] / numSentences
-	returnsObj['anger'] = tonesValues['anger'] / numSentences
-	returnsObj['fear'] = tonesValues['fear'] / numSentences
-	returnsObj['joy'] = tonesValues['joy'] / numSentences
+        responseTones.forEach(tonesObj => {
+            tonesObj.tones.forEach(tone => {
+                console.log(JSON.stringify(tone))
+                tonesValues[tone['tone_id']] += tone['score']
+            })
+        })
+    }
+    let numSentences = responseTones.length
 
+    console.log(JSON.stringify(tonesValues))
+    returnsObj = {}
+    returnsObj['sadness'] = tonesValues['sadness'] / numSentences
+    returnsObj['anger'] = tonesValues['anger'] / numSentences
+    returnsObj['fear'] = tonesValues['fear'] / numSentences
+    returnsObj['joy'] = tonesValues['joy'] / numSentences
+	
 	res.send(JSON.stringify(returnsObj))
 }
 

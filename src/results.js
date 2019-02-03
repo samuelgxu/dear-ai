@@ -18,8 +18,10 @@ function TabContainer(props) {
 class Results extends React.Component {
 	constructor(props) {
 		super(props)
+
 		this.state = {
-			openTab: 0
+			openTab: 0,
+            emotion: props.match.params.emotion
 		}
 	}
 
@@ -38,10 +40,7 @@ class Results extends React.Component {
 				<div style={{textAlign: 'center'}}>
 					<div style={{marginTop: 10, fontSize: '2.3em', backgroundColor: '#ADE4EE', borderRadius: '8px', width: '80vw'}}>
 						Based on your journal entry, I think you feel:<br/>
-						<span style={{fontSize: '2.2em'}}> sad </span>
-						and a little 
-						<span style={{fontSize: '2.2em'}}> scared </span> <br/>
-						<span style={{fontSize: '.8em'}}>I'd recommend that you:</span>
+						<span style={{fontSize: '2.2em'}}> {this.state.emotion} </span>
 					</div>
 					<Tabs
 			          onChange={this.handleChange}
