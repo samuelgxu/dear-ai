@@ -92,16 +92,20 @@ let getSadActivities = (res) => {
 
 	let resultsObject = {
 		tabs: ["Funny Videos", "Comfort Food", "Sad Music"],
-		videos: sampleFromList(sadVideos),
-		restaurants: []
+		data: [
+			[],
+			[],
+			[]
+		]
 		//music: sadMusicPlaylist
 	}
 
 	// Get list of comfort food locations from Yelp
 	getLocationFromYelp('comfort food', (info) => {
-		let businesses = JSON.parse(info).businesses.slice(0, 4)
-		resultsObject['restaurants'] = businesses
-		res.send(resultsObject)
+		let businesses = JSON.parse(info).businesses.slice(0, 8)
+		console.log(businesses)
+		resultsObject.data[1] = businesses
+		res.send(JSON.stringify(resultsObject))
 	})
 }
 
@@ -150,7 +154,6 @@ let getLocationFromYelp = (searchBarText, callback) => {
 
 	request(options, function (error, response, body) {
 		if (error) throw new Error(error)
-		console.log(body)
 		callback(body)
 	})
 }

@@ -5,8 +5,33 @@ import SwipeableViews from 'react-swipeable-views';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Axios from 'axios'
+
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+
 let server = require('./config.json').server
+
+
+const styles = {
+  card: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: '1em',
+  },
+  pos: {
+    marginBottom: 12,
+  },
+};
 
 
 function TabContainer(props) {
@@ -44,9 +69,11 @@ class Results extends React.Component {
 		let request = `${server}/activities/${this.state.emotion}`
 		try {
 			let response = await Axios.get(request)
-			console.log(response.data)
 			this.setState({
 				tabs: response.data.tabs,
+				info: response.data.data
+			}, () => {
+				console.log(this.state)
 			})
 		} catch (e) {
 			console.log("Error, could not find: ", e)
@@ -62,37 +89,79 @@ class Results extends React.Component {
 			openTab: value
 		})
 	}
+
+	makeCard = (info) => {
+	    return (
+	      <Card className={styles.card} elevation={2} style={{marginTop: 10, width: 280, margin: 10}}>
+	        <CardContent>
+	          <Typography className={styles.title} style={{fontSize: '1.2em'}} color="textSecondary" gutterBottom>
+	            Restaurant
+	          </Typography>
+	          <CardMedia
+		          image={info.image_url}
+		          title="Paella dish"
+		          style={{height: 140}}
+		        />
+	          <Typography style={{ textAlign: 'left', paddingTop: 20, fontSize: '2em', color: '#4B4B4B'}}>
+	            <a href={info.url}>{info.name}</a>
+	          </Typography>
+	        </CardContent>
+	      </Card>
+	    )
+	  }
+
 	render() {
-		return (
-			<div className="ResultsGradient" style={{minHeight: '90vh', width: '100%'}} >
-				<div style={{textAlign: 'center', paddingTop: 20, fontSize: '2.3em',  borderRadius: '8px'}}>
-					Based on your journal entry, I think you feel:<br/>
-					<span style={{fontSize: '2.2em'}}> {this.state.printEmotion} </span>
+		if (this.state.tabs.length === 0) {
+			return (
+				<div>
+				Loading...
 				</div>
-				<Tabs
-		          onChange={this.handleChange}
-		          value={this.state.openTab}
-        	      variant="scrollable fullWidth"
-        	      scrollButtons="on"
-		          indicatorColor="primary"
-		          textColor="primary"
-		          centered
-		        >
-		          <Tab label={this.state.tabs[0]}/>
-		          <Tab label={this.state.tabs[1]} />
-		          <Tab label={this.state.tabs[2]} />
-		        </Tabs>
-		         <SwipeableViews
-		          axis={'x'}
-		          index={this.state.openTab}
-		          onChangeIndex={this.handleChangeIndex}
-		        >
-		          <TabContainer>Item One</TabContainer>
-		          <TabContainer>Item Two</TabContainer>
-		          <TabContainer>Item Three</TabContainer>
-		        </SwipeableViews>
-			</div>
-		);
+			)
+		} else {
+			return (
+				<div className="ResultsGradient" style={{minHeight: '90vh', width: '100%'}} >
+					<div style={{textAlign: 'center', paddingTop: 20, fontSize: '2.3em',  borderRadius: '8px'}}>
+						Based on your journal entry, I think you feel:<br/>
+						<span style={{fontSize: '2.2em'}}> {this.state.printEmotion} </span>
+					</div>
+					<div>
+						<Tabs
+				          onChange={this.handleChange}
+				          value={this.state.openTab}
+		        	      variant="fullWidth"
+		        	      scrollButtons="on"
+				          indicatorColor="primary"
+				          textColor="primary"
+				          centered
+				        >
+				          <Tab label={this.state.tabs[0]}/>
+				          <Tab label={this.state.tabs[1]} />
+				          <Tab label={this.state.tabs[2]} />
+				        </Tabs>
+				         <SwipeableViews
+				          axis={'x'}
+				          index={this.state.openTab}
+				          onChangeIndex={this.handleChangeIndex}>
+				          <TabContainer>{
+				          	this.state.info[0].map(this.makeCard)
+				          }</TabContainer>
+				          <TabContainer>
+				        	<div style={{paddingTop: 20, paddingLeft: 20}}>
+				              <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', flexDirection: 'row', padding: 8}}>
+				                {
+				                  this.state.info[1].map(this.makeCard)
+				                }
+				              </div>
+				          	</div>
+				          </TabContainer>
+				          <TabContainer>{
+				          	this.state.info[2].map(this.makeCard)
+				          }</TabContainer>
+				        </SwipeableViews> 
+			        </div>
+		        </div>
+			)
+		}
 	}
 }
 
