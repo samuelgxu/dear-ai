@@ -115,6 +115,14 @@ let processRequest = (responseObject, res) => {
 	returnsObj['fear'] = tonesValues['fear'] / numSentences
 	returnsObj['joy'] = tonesValues['joy'] / numSentences
 
+	// Get the tone with the highest percentage
+	highestTonePercentage = Math.max(returnsObj['sadness'], returnsObj['anger'], returnsObj['fear'], returnsObj['joy'])
+	for (var emotion in returnsObj) {
+		if (returnsObj[emotion] == highestTonePercentage) {
+			console.log("The tone with the highest percentage is " + emotion)
+		}
+	}
+
 	res.send(JSON.stringify(returnsObj))
 }
 
@@ -132,7 +140,7 @@ app.post("/sentiment", (req, res) => {
 			method: "POST",
 			url: "https://gateway-wdc.watsonplatform.net/tone-analyzer/api/v3/tone",
 			headers: {
-				Authorization: authKey		
+				Authorization: authKey
 			},
 			qs: { 
 				version: "2017-09-21" 
