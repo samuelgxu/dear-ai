@@ -1,4 +1,4 @@
-View the SlideDeck for this project at: [slides] (https://docs.google.com/presentation/d/1G1M9v0Vk2-tAhulnirHIsoivKq3WK7E2tx3RZW12Zas/edit?usp=sharing)
+View the SlideDeck for this project at: [slides](https://docs.google.com/presentation/d/1G1M9v0Vk2-tAhulnirHIsoivKq3WK7E2tx3RZW12Zas/edit?usp=sharing)
 
 ## Inspiration / Why
 
