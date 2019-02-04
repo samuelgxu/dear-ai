@@ -1,4 +1,4 @@
-![logo](https://user-images.githubusercontent.com/31573030/52242744-805ffd00-28a5-11e9-92c6-d822ede4124d.png)
+<img width="318" alt="screen shot 2019-02-04 at 5 53 41 pm" src="https://user-images.githubusercontent.com/31573030/52242855-cfa62d80-28a5-11e9-82c5-f1e1f14371d1.png">
 
 View the SlideDeck for this project at: [slides](https://docs.google.com/presentation/d/1G1M9v0Vk2-tAhulnirHIsoivKq3WK7E2tx3RZW12Zas/edit?usp=sharing)
 
