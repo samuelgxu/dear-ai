@@ -1,3 +1,9 @@
+![img](https://user-images.githubusercontent.com/31573030/52242740-805ffd00-28a5-11e9-83cc-649314468acc.png)
+![img1](https://user-images.githubusercontent.com/31573030/52242741-805ffd00-28a5-11e9-9696-e9d935998347.png)
+![img2](https://user-images.githubusercontent.com/31573030/52242742-805ffd00-28a5-11e9-88ca-dbe4e237a74d.png)
+![img3](https://user-images.githubusercontent.com/31573030/52242743-805ffd00-28a5-11e9-81a2-e6ea444d49a2.png)
+![logo](https://user-images.githubusercontent.com/31573030/52242744-805ffd00-28a5-11e9-92c6-d822ede4124d.png)
+
 View the SlideDeck for this project at: [slides](https://docs.google.com/presentation/d/1G1M9v0Vk2-tAhulnirHIsoivKq3WK7E2tx3RZW12Zas/edit?usp=sharing)
 
 ## Inspiration / Why
