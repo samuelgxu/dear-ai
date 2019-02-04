@@ -1,68 +1,23 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+View the SlideDeck for this project at: [slides] (https://docs.google.com/presentation/d/1G1M9v0Vk2-tAhulnirHIsoivKq3WK7E2tx3RZW12Zas/edit?usp=sharing)
 
-## Available Scripts
+##Inspiration / Why
 
-In the project directory, you can run:
+It is no surprise that mental health has been a prevailing issue in modern society. 16.2 million adults in the US and 300 million people in the world have depression according to the World Health Organization. Nearly 50 percent of all people diagnosed with depression are also diagnosed with anxiety. Furthermore, anxiety and depression rates are a rising issue among the teenage and adolescent population. About 20 percent of all teens experience depression before they reach adulthood, and only 30 percent of depressed teens are being treated for it.
 
-### `npm start`
+To help battle for mental well-being within this space, we created DearAI. Since many teenagers do not actively seek out support for potential mental health issues (either due to financial or personal reasons), we want to find a way to  inform teens about their emotions using machine learning and NLP and recommend to them activities designed to improve their well-being.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+##Our Product:
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+To help us achieve this goal, we wanted to create an app that integrated journaling, a great way for users to input and track their emotions over time. Journaling has been shown to reduce stress, improve immune function, boost mood, and strengthen emotional functions. Journaling apps already exist, however, our app performs sentiment analysis on the user entries to help users be aware of and keep track of their emotions over time.
 
-### `npm test`
+Furthermore, every time a user inputs an entry, we want to recommend the user something that will lighten up their day if they are having a bad day, or something that will keep their day strong if they are having a good day. As a result, if the natural language processing results return a negative sentiment like fear or sadness, we will recommend a variety of prescriptions from meditation, which has shown to decrease anxiety and depression, to cat videos on Youtube. We currently also recommend dining options and can expand these recommendations to other activities such as outdoors activities (i.e. hiking, climbing) or movies.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**We want to improve the mental well-being and lifestyle of our users through machine learning and journaling.This is why we created DearAI.**
 
-### `npm run build`
+##Implementation / How
+Research has found that ML/AI can detect the emotions of a user better than the user themself can. As a result, we leveraged the power of IBM Watson’s NLP algorithms to extract the sentiments within a user’s textual journal entries. With the user’s emotions now quantified, DearAI then makes recommendations to either improve or strengthen the user’s current state of mind. The program makes a series of requests to various API endpoints, and we explored many APIs including Yelp, Spotify, OMDb, and Youtube. Their databases have been integrated and this has allowed us to curate the content of the recommendation based on the user’s specific emotion, because not all forms of entertainment are relevant to all emotions.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+For example, the detection of sadness could result in recommendations ranging from guided meditation to comedy. Each journal entry is also saved so that users can monitor the development of their emotions over time.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+##Future
+There are a considerable amount of features that we did not have the opportunity to implement that we believe would have improved the app experience. In the future, we would like to include video and audio recording so that the user can feel more natural speaking their thoughts and also so that we can use computer vision analysis on the video to help us more accurately determine users’ emotions. Also, we would like to integrate a recommendation system via reinforcement learning by having the user input whether our recommendations improved their mood or not, so that we can more accurately prescribe recommendations as well. Lastly, we can also expand the APIs we use to allow for more recommendations.
